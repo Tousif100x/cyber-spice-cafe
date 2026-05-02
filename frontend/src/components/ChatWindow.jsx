@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { Send, MessageCircle, X } from 'lucide-react';
 
+const API_URL = import.meta.env.VITE_API_URL || "https://cyber-spice-cafe.onrender.com";
+
 export default function ChatWindow() {
   const [messages, setMessages] = useState([
     { role: 'assistant', content: 'Hi there! What can I do for you today? Welcome to The Cyber Spice Cafe!' }
@@ -30,7 +32,7 @@ export default function ChatWindow() {
     setIsLoading(true);
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/chat`, {
+      const response = await axios.post(`${API_URL}/api/chat`, {
         messages: newMessages.map(m => ({ role: m.role, content: m.content }))
       });
       

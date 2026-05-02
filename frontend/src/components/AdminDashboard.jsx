@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Loader2, Package, Clock, User, Phone, MapPin } from 'lucide-react';
 
+const API_URL = import.meta.env.VITE_API_URL || "https://cyber-spice-cafe.onrender.com";
+
+
 export default function AdminDashboard() {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -15,7 +18,7 @@ export default function AdminDashboard() {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/orders`);
+      const res = await axios.get(`${API_URL}/api/orders`);
       setOrders(res.data);
     } catch (error) {
       console.error('Failed to fetch orders:', error);
