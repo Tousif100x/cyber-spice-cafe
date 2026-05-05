@@ -8,6 +8,7 @@ const API_URL = import.meta.env.VITE_API_URL || "https://cyber-spice-cafe.onrend
 export default function AdminDashboard() {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchOrders();
@@ -20,8 +21,10 @@ export default function AdminDashboard() {
     try {
       const res = await axios.get(`${API_URL}/api/orders`);
       setOrders(res.data);
+      setError(null);
     } catch (error) {
       console.error('Failed to fetch orders:', error);
+      setError('Could not connect to the server. Please check your backend deployment.');
     } finally {
       setIsLoading(false);
     }
@@ -41,10 +44,16 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto p-6">
+    <div className="min-h-screen bg-gray-50 overflow-y-auto p-6">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Live Order Dashboard</h1>
         
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6">
+            {error}
+          </div>
+        )}
+
         {orders.length === 0 ? (
           <div className="bg-white rounded-xl shadow-sm p-12 text-center border border-gray-200">
             <Package className="h-16 w-16 text-gray-400 mx-auto mb-4" />
