@@ -44,21 +44,27 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 overflow-y-auto p-6">
+    <div className="min-h-screen bg-black overflow-y-auto p-6">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Live Order Dashboard</h1>
+        <h1 className="text-3xl font-bold text-blue-400 mb-8 border-b border-gray-800 pb-4">
+          Live Order Dashboard
+        </h1>
         
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6">
+          <div className="bg-red-900/20 border border-red-500 text-red-400 px-4 py-3 rounded-xl mb-6">
             {error}
           </div>
         )}
 
         {orders.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-sm p-12 text-center border border-gray-200">
-            <Package className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-medium text-gray-900">No Orders Yet</h3>
-            <p className="text-gray-500 mt-2">When customers place orders via the chatbot, they will appear here.</p>
+          <div className="bg-black rounded-2xl shadow-xl p-16 text-center border border-gray-800">
+            <Package className="h-20 w-20 text-blue-400 mx-auto mb-6" />
+            <h3 className="text-3xl font-semibold text-blue-400 mb-3">
+              No Orders Yet
+            </h3>
+            <p className="text-blue-300 text-lg max-w-md mx-auto">
+              When customers place orders via the chatbot, they will appear here.
+            </p>
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
