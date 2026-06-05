@@ -53,12 +53,14 @@ router.post('/', async (req, res) => {
     }
     if (!completion) throw lastError;
 
-    let botResponse = completion.choices[0].message.content;
+    // Some reasoning models return null content — fall back to reasoning_content or empty string
+    const msg = completion.choices[0].message;
+    let botResponse = msg.content || msg.reasoning_content || '';
     let orderFinalized = false;
     let savedOrder = null;
 
     // Check if the bot included the secret JSON block for a finalized order
-    const jsonMatch = botResponse.match(/```json\n([\s\S]*?)\n```/);
+    const jsonMatch = botResponse ? botResponse.match(/```json\n([\s\S]*?)\n```/) : null;
     if (jsonMatch) {
       try {
         const parsedJson = JSON.parse(jsonMatch[1]);
