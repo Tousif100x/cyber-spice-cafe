@@ -4,10 +4,12 @@ const { OpenAI } = require('openai');
 const SYSTEM_PROMPT = require('../prompt');
 const Order = require('../models/Order');
 
+const apiKey = process.env.OPENAI_API_KEY || '';
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  baseURL: process.env.OPENAI_API_KEY.startsWith('sk-or') ? 'https://openrouter.ai/api/v1' : undefined
+  apiKey: apiKey,
+  baseURL: apiKey.startsWith('sk-or') ? 'https://openrouter.ai/api/v1' : undefined
 });
+
 
 router.post('/', async (req, res) => {
   try {
@@ -23,8 +25,9 @@ router.post('/', async (req, res) => {
       ...messages
     ];
 
+    const modelName = apiKey.startsWith('sk-or') ? 'openrouter/free' : 'gpt-4o-mini';
     const completion = await openai.chat.completions.create({
-      model: process.env.OPENAI_API_KEY.startsWith('sk-or') ? 'inclusionai/ling-2.6-1t:free' : 'gpt-4o-mini',
+      model: modelName,
       messages: apiMessages,
       temperature: 0.7,
     });
