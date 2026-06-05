@@ -25,12 +25,33 @@ router.post('/', async (req, res) => {
       ...messages
     ];
 
-    const modelName = apiKey.startsWith('sk-or') ? 'openrouter/free' : 'gpt-4o-mini';
-    const completion = await openai.chat.completions.create({
-      model: modelName,
-      messages: apiMessages,
-      temperature: 0.7,
-    });
+    // Try a list of free models in order until one works
+    const freeModels = [
+      'deepseek/deepseek-chat-v3-0324:free',
+      'google/gemma-3-4b-it:free',
+      'microsoft/phi-3-mini-128k-instruct:free',
+      'meta-llama/llama-3.3-70b-instruct:free',
+      'openrouter/free',
+    ];
+    const modelsToTry = apiKey.startsWith('sk-or') ? freeModels : ['gpt-4o-mini'];
+
+    let completion = null;
+    let lastError = null;
+    for (const modelName of modelsToTry) {
+      try {
+        completion = await openai.chat.completions.create({
+          model: modelName,
+          messages: apiMessages,
+          temperature: 0.7,
+        });
+        console.log(`✅ Model worked: ${modelName}`);
+        break;
+      } catch (err) {
+        console.error(`❌ Model failed (${modelName}):`, err?.error?.message || err.message);
+        lastError = err;
+      }
+    }
+    if (!completion) throw lastError;
 
     let botResponse = completion.choices[0].message.content;
     let orderFinalized = false;
@@ -76,7 +97,7 @@ router.post('/', async (req, res) => {
     
   } catch (error) {
     console.error('Chat API Error:', error);
-    res.status(500).json({ error: 'Failed to process chat message' });
+    res.status(500).json({ error: 'Failed to process chat message', detail: error?.error?.message || error.message });
   }
 });
 
